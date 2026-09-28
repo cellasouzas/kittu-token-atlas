@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head>
+<body>
+<title>Atlas de Tokens Kittu</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&family=Open+Sans:wght@400&display=swap">
+<style>
+:root{
+  --ground:#F6F7F8; --surface:#FFFFFF; --surface-2:#EEF0F3;
+  --ink:#15181C; --ink-2:#565F69; --ink-3:#89919A;
+  --line:#E4E7EB; --line-2:#D2D7DD;
+  --accent:#E3175E; --accent-soft:#FFEBF1; --deep:#1C4173;
+  --ok:#216400; --warn:#7D4800; --bad:#A00505;
+  --ring:rgba(15,20,25,.12);
+  --font-display:"Funnel Display",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+/* página oficial fica em light mode — sem auto-escurecer pelo tema do sistema;
+   o toggle manual do viewer (data-theme="dark") continua disponível */
+:root[data-theme="dark"]{
+  --ground:#0B0D10; --surface:#15181D; --surface-2:#1C2025;
+  --ink:#EBEDF0; --ink-2:#A7AFB9; --ink-3:#767F89;
+  --line:#262B31; --line-2:#343A41;
+  --accent:#F687A4; --accent-soft:#2A1520; --deep:#7C97B8;
+  --ok:#96DB76; --warn:#EFB449; --bad:#FF9A98;
+  --ring:rgba(255,255,255,.16);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--font-display);
+  font-size:14px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+code,.mono{font-family:var(--font-mono)}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+/* fundo: glow suave atrás do hero + grid de pontos bem discreta, no espírito
+   21st.dev — decorativo, absoluto no topo da página (não fixo: mais leve pro
+   navegador compor durante o scroll), nunca compete com o conteúdo */
+.bg-fx{
+  position:absolute; top:0; left:0; right:0; height:640px; z-index:-1; pointer-events:none;
+  overflow:hidden;
+  background-image: radial-gradient(color-mix(in srgb, var(--line-2) 30%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.bg-fx::before, .bg-fx::after{
+  content:""; position:absolute; border-radius:50%; filter:blur(6px);
+  will-change:transform;
+}
+.bg-fx::before{
+  top:-220px; left:-8%; width:640px; height:640px;
+  background:radial-gradient(circle, color-mix(in srgb, var(--accent) 13%, transparent), transparent 68%);
+  animation: bgDrift1 34s ease-in-out infinite alternate;
+}
+.bg-fx::after{
+  top:-260px; right:-12%; width:560px; height:560px;
+  background:radial-gradient(circle, color-mix(in srgb, var(--deep) 10%, transparent), transparent 68%);
+  animation: bgDrift2 40s ease-in-out infinite alternate;
+}
+@keyframes bgDrift1{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(6%,5%) scale(1.12)}
+  100%{transform:translate(-5%,10%) scale(0.94)}
+}
+@keyframes bgDrift2{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-7%,8%) scale(0.92)}
+  100%{transform:translate(4%,-4%) scale(1.1)}
+}
+
+/* ---------- shell: top bar + stretched nav ---------- */
+.top{
+  position:sticky; top:0; z-index:30;
+  padding-top:env(safe-area-inset-top,0px);
+  background:color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 12px 24px -18px rgba(15,20,25,.16);
+}
+.top-in{
+  max-width:1120px; margin:0 auto; padding:22px 24px;
+  display:flex; align-items:center; gap:22px; flex-wrap:nowrap;
+}
+.brand{display:flex;align-items:center;flex:none;order:1}
+.brand .logo{width:104px;height:auto;max-width:100%;display:block}
+.hero{margin-bottom:34px}
+.hero-eyebrow{display:block;font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.hero h1{font-size:44px;font-weight:700;letter-spacing:-.025em;line-height:1.05}
+.find{
+  flex:1 1 60px; min-width:0; margin-left:auto; max-width:240px; order:3;
+  font:400 13px/1.4 var(--font-mono); color:var(--ink); text-align:left;
+  background:transparent; border:0; border-bottom:1px solid var(--line-2);
+  border-radius:0; padding:6px 2px; appearance:none;
+}
+.find::placeholder{color:var(--ink-3)}
+.find:focus{outline:none;border-bottom-color:var(--accent)}
+nav{max-width:1120px;margin:0 auto;display:flex;padding:0 24px;gap:2px;overflow-x:auto;order:2}
+nav button{
+  all:unset; cursor:pointer; flex:none; display:flex; align-items:baseline; justify-content:center; gap:6px;
+  padding:14px 12px; font-size:13px; font-weight:500; color:var(--ink-2); white-space:nowrap;
+  font-family:var(--font-display); letter-spacing:-.005em; position:relative;
+  transition:color .15s ease;
+}
+nav button::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:2px;border-radius:2px 2px 0 0;background:var(--accent);transform:scaleX(0);transition:transform .15s ease}
+nav button i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+nav button:hover{color:var(--ink)}
+nav button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+nav button[aria-current="true"]{color:var(--accent);font-weight:600}
+nav button[aria-current="true"]::after{transform:scaleX(1)}
+nav button[aria-current="true"] i{color:var(--accent)}
+/* a partir daqui cabe tudo numa linha só: logo · nav esticado no meio · busca
+   na ponta — abaixo disso, nav some para a própria fileira (mais folga) */
+@media (min-width:861px){
+  /* logo no canto esquerdo, busca no canto direito, edge-to-edge de verdade.
+     o nav é um grupo compacto no meio — não estica: o space-between abre um
+     respiro maior entre ele e as duas pontas, em vez de esticar cada aba */
+  .top{display:flex; align-items:center; justify-content:space-between; width:100%; margin:0; padding:20px 32px; gap:32px}
+  .top-in{display:contents}
+  nav{flex:0 1 auto; min-width:0; max-width:none; margin:0; padding:0; gap:6px}
+  nav button{flex:none; padding:12px 16px}
+  .find{flex:0 1 220px; min-width:110px}
+}
+
+main{max-width:900px;margin:0 auto;padding:calc(44px + env(safe-area-inset-top,0px)) 24px 96px;min-width:0}
+section{margin-bottom:132px;scroll-margin-top:112px;position:relative}
+section:last-child{margin-bottom:0}
+section:not(:first-child)::before{
+  content:""; position:absolute; top:-66px; left:0; right:0; height:1px;
+  background:linear-gradient(to right, transparent, var(--line-2) 15%, var(--line-2) 85%, transparent);
+}
+.h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.h h2{font-size:27px;font-weight:700;letter-spacing:-.02em}
+.h em{font-style:normal;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.tag{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);display:inline-flex;align-items:center;gap:5px}
+.tag::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;flex:none}
+.tag.pub{color:var(--accent)}
+.lede{color:var(--ink-2);max-width:62ch;margin:0 0 26px;font-size:14.5px;line-height:1.6}
+.intro{border-left:3px solid var(--accent);padding:2px 0 2px 22px;margin-bottom:44px}
+.intro .big{font-size:19px;font-weight:600;letter-spacing:-.012em;color:var(--ink);margin:0 0 10px;text-wrap:balance;max-width:46ch;line-height:1.4}
+.intro p{margin:0;color:var(--ink-2);font-size:13.5px;max-width:70ch;line-height:1.6}
+.intro p + p{margin-top:9px}
+.intro .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px 28px;margin-top:22px}
+.intro .two div{border-top:1px solid var(--line);padding-top:11px}
+.intro .two b{display:block;font-family:var(--font-mono);font-size:12px;margin-bottom:5px;color:var(--ink);font-weight:500}
+.intro .two span{font-size:13px;color:var(--ink-2);line-height:1.55}
+h3.sub{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:36px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+
+/* ---------- rows ---------- */
+.rows{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.row{display:grid;grid-template-columns:54px minmax(120px,1.05fr) minmax(0,1.5fr);gap:12px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row:hover{background:var(--surface-2)}
+.spec{display:flex;align-items:center;justify-content:center;height:30px}
+.nm{font-family:var(--font-mono);font-size:12.5px;font-weight:500;overflow-wrap:anywhere}
+.nm b{font-weight:600}
+.nm s{text-decoration:none;color:var(--ink-3)}
+.fn{font-size:13px;color:var(--ink-2)}
+.chain{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere}
+.chain b{color:var(--ink-2);font-weight:400}
+.val{font-family:var(--font-mono);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* specimens */
+.sw{width:30px;height:30px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--ring)}
+.bar{height:11px;border-radius:2px;background:var(--deep);max-width:100%}
+.rule{width:34px;background:var(--ink-2);border-radius:1px}
+.corner{width:30px;height:30px;background:var(--surface-2);box-shadow:inset 0 0 0 1.5px var(--deep)}
+.glyph{font-family:Poppins,sans-serif;line-height:1;color:var(--ink)}
+
+/* scope / structure glyphs (neutral — these mark WHERE a token applies, not a color) */
+.gi{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink-2)}
+.gi-fill{background:var(--ink-2)}
+.gi-stroke{box-shadow:inset 0 0 0 1.5px var(--ink-2)}
+.gi-ring{border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink-2)}
+.gi-dashring{border-radius:50%;border:1.5px dashed var(--ink-2)}
+.gi-text{font-family:var(--font-mono);font-size:12px;font-weight:600}
+.gi-gap{gap:4px}
+.gi-gap i{display:block;width:7px;height:18px;border-radius:2px;background:var(--ink-2);font-style:normal}
+.gi-opacity{background:var(--ink-2);opacity:.35}
+.gi-radius{box-shadow:inset 0 0 0 1.5px var(--ink-2);border-radius:11px 2px 2px 2px}
+.gi-chart{align-items:flex-end;gap:2.5px}
+.gi-chart i{display:block;width:4px;border-radius:1px;background:var(--ink-2);font-style:normal}
+.gi-dots{gap:4px}
+.gi-dots i{display:block;width:5px;height:5px;border-radius:50%;background:var(--ink-2);font-style:normal;flex:none}
+.gi-dots .ln{display:block;width:6px;height:1.5px;background:var(--ink-2)}
+.gi-brackets{font-family:var(--font-mono);font-size:14px;font-weight:500;letter-spacing:-1px}
+
+/* spacing / ruler blocks */
+.ruler{display:flex;align-items:center;gap:12px;padding:9px 14px;border-top:1px solid var(--line)}
+.ruler:first-child{border-top:0}
+.ruler .lab{font-family:var(--font-mono);font-size:12px;width:132px;flex:none}
+.ruler .px{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3);width:46px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+.ruler .track{flex:1;min-width:0;display:flex;align-items:center}
+.ruler .scss{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);flex:none}
+
+/* ---------- ramps ---------- */
+.ramp{display:grid;grid-template-columns:62px repeat(13,minmax(0,1fr));gap:3px;align-items:center;margin-bottom:3px}
+.ramp .fam{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-2)}
+.chip{position:relative;aspect-ratio:1/1.35;border-radius:4px;box-shadow:inset 0 0 0 1px var(--ring);display:block;width:100%}
+.chip.used::after{content:"";position:absolute;inset:auto 0 3px 0;margin:auto;width:4px;height:4px;border-radius:50%;background:#fff;mix-blend-mode:difference}
+.ramp-head{display:grid;grid-template-columns:62px repeat(13,minmax(0,1fr));gap:3px;margin-bottom:5px}
+.ramp-head span{font-family:var(--font-mono);font-size:9.5px;color:var(--ink-3);text-align:center}
+.ramps-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:14px}
+.ramps-in{min-width:660px}
+
+/* ---------- state matrix ---------- */
+.mx-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:14px}
+.mx{min-width:600px;display:grid;grid-template-columns:104px repeat(5,minmax(0,1fr));gap:6px}
+.mx .ch{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding-bottom:3px}
+.mx .rh{font-family:var(--font-mono);font-size:12px;display:flex;align-items:center}
+.cell{border-radius:6px;padding:7px 8px;box-shadow:inset 0 0 0 1px var(--ring);min-height:50px;display:flex;align-items:flex-end}
+.cell u{text-decoration:none;font-size:10.5px;font-weight:500;font-family:var(--font-mono)}
+
+/* ---------- type specimens ---------- */
+.spec-row{display:flex;align-items:baseline;gap:16px;padding:14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.spec-row:first-child{border-top:0}
+.spec-row .meta{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);flex:none;width:186px;line-height:1.6}
+.spec-row .meta b{display:block;color:var(--ink);font-size:12.5px;font-weight:500}
+.spec-row .samp{flex:1;min-width:0;color:var(--ink);overflow:hidden}
+
+/* ---------- shadows ---------- */
+.shadows{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
+.shcard{background:var(--surface);border-radius:9px;padding:16px;text-align:center}
+.shcard b{font-family:var(--font-mono);font-size:12px;font-weight:500;display:block}
+.shcard span{font-size:11px;color:var(--ink-3);font-family:var(--font-mono)}
+
+/* ---------- number grid ---------- */
+.nums{display:flex;flex-wrap:wrap;gap:5px}
+.num{font-family:var(--font-mono);font-size:11.5px;padding:4px 8px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.num.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:500}
+
+/* ---------- naming diagram ---------- */
+.anat{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:22px 18px;margin-bottom:20px;overflow-x:auto}
+.anat-in{min-width:380px}
+.anat .line{font-family:var(--font-mono);font-size:20px;font-weight:500;letter-spacing:-.01em;display:flex;gap:0;align-items:baseline}
+.anat .p1{color:var(--accent)} .anat .p2{color:var(--deep)} .anat .p3{color:var(--ink)}
+.anat .sl{color:var(--ink-3)}
+.anat .legs{display:flex;gap:0;margin-top:11px}
+.anat .leg{font-size:12px;color:var(--ink-2);line-height:1.4;padding-top:8px;border-top:1px solid var(--line-2);position:relative}
+.anat .leg em{font-style:normal;display:block;font-weight:600;color:var(--ink);font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--surface-2);border:0;border-radius:20px;padding:24px}
+.card h4{margin:0 0 8px;font-size:15px;font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.card p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.card p + p{margin-top:8px}
+
+.ratio{font-family:var(--font-mono);font-size:10.5px;font-weight:500;padding:1.5px 5px;border-radius:4px;white-space:nowrap}
+.ratio.pass{color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,transparent)}
+.ratio.fail{color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,transparent)}
+
+.note{font-size:12.5px;color:var(--ink-3);margin-top:10px;max-width:62ch;line-height:1.55}
+.empty{padding:30px 14px;text-align:center;color:var(--ink-3);font-size:13px}
+[hidden]{display:none!important}
+
+@media (max-width:860px){
+  .top-in{padding:16px;gap:12px}
+  .brand .logo{width:84px}
+  nav{padding:0 16px}
+  main{padding:32px 16px 80px}
+  .row{grid-template-columns:44px minmax(0,1fr);gap:10px}
+  .row .fn-wrap{grid-column:1/-1;padding-left:54px;margin-top:-4px}
+  .ruler{flex-wrap:wrap}
+  .ruler .lab{width:auto;flex:1}
+  .ruler .track{flex:1 0 100%;order:9}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="bg-fx" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <svg class="logo" width="120" height="30" viewBox="0 0 930 229" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kittu">
+        <g clip-path="url(#logoclip)">
+          <path d="M0 56.5503V206.127H149.567V56.5503H0ZM124.336 180.887H25.2311V81.7911L71.786 127.435L124.336 180.887Z" fill="#E3175E"/>
+          <path d="M173.701 228.105H219.639V182.167H173.701V228.105Z" fill="#E3175E"/>
+          <path d="M259.639 225.148V0H296.09V130.263H297.164L368.196 64.3227H412.151L340.854 128.645L418.052 225.136H374.627L315.661 150.895L296.09 166.979V225.148H259.639ZM437.509 225.148V64.3353H473.96V225.161H437.509V225.148ZM455.728 45.0297C450.005 45.0297 445.09 43.0587 440.983 39.1293C436.877 35.0231 434.818 30.0198 434.818 24.1194C434.818 18.2191 436.789 13.4811 440.718 9.37486C444.824 5.26862 449.828 3.20919 455.728 3.20919C461.628 3.20919 466.366 5.26862 470.473 9.37486C474.579 13.3042 476.638 18.2191 476.638 24.1194C476.638 30.0198 474.579 34.7578 470.473 38.864C466.543 42.9702 461.628 45.0297 455.728 45.0297ZM560.039 225.148C550.209 225.148 542.528 222.647 536.994 217.643C531.637 212.64 528.958 205.047 528.958 194.863V92.7379H500.012V64.3227H529.223V16.0838H565.144V64.3353H605.081V92.7505H565.409V196.48H609.099V225.161H560.052L560.039 225.148ZM680.333 225.148C670.503 225.148 662.822 222.647 657.288 217.643C651.93 212.64 649.252 205.047 649.252 194.863V92.7379H620.306V64.3227H649.517V16.0838H685.437V64.3353H725.375V92.7505H685.703V196.48H729.393V225.161H680.346L680.333 225.148ZM822.346 228.105C800.905 228.105 784.189 222.293 772.224 210.682C760.436 199.071 754.536 183.252 754.536 163.239V64.3353H790.987V155.999C790.987 169.228 794.385 179.234 801.17 186.019C807.955 192.627 818.063 195.937 831.455 195.937C844.848 195.937 855.84 192.362 863.345 185.21C871.027 178.059 874.868 168.053 874.868 155.191V64.3353H911.319V188.432H929.816V225.148H892.026V199.69H880.768C874.691 208.976 866.921 216.039 857.445 220.865C847.969 225.692 836.269 228.105 822.333 228.105H822.346Z" fill="var(--ink)"/>
+        </g>
+        <defs><clipPath id="logoclip"><rect width="929.816" height="228.105" fill="white"/></clipPath></defs>
+      </svg>
+    </div>
+    <input class="find" id="q" type="search" placeholder="filtrar token…" autocomplete="off" aria-label="Filtrar tokens">
+  </div>
+  <nav id="nav" aria-label="Camadas"></nav>
+</header>
+
+<main id="main"></main>
+
+<script>
+/* ============ DADOS ============ */
+const RAMP=[0,50,100,200,300,400,500,600,700,800,900,950,1000];
+const P={
+ neutral:{0:'#FFFFFF',50:'#FAFAFA',100:'#F5F5F5',200:'#EEEEEE',300:'#E0E0E0',400:'#BDBDBD',500:'#9E9E9E',600:'#757575',700:'#616161',800:'#424242',900:'#212121',950:'#1F1B1C',1000:'#000000'},
+ pink:{50:'#FFEBF1',100:'#FFD9E6',200:'#FAAEC9',300:'#F687A4',400:'#EE5B81',500:'#E3175E',600:'#CA0C4E',700:'#B2003F',800:'#910033',900:'#720028',950:'#5C0018'},
+ navy:{50:'#EBF1F7',100:'#DEE7F1',200:'#ACBED4',300:'#7C97B8',400:'#4B6B95',500:'#1C4173',600:'#173B6B',700:'#113463',800:'#0B2E5C',900:'#062854',950:'#001D40'},
+ red:{50:'#FFD7D7',100:'#FFC0C0',200:'#FF9A98',300:'#FF7171',400:'#F04E4A',500:'#E01B1B',600:'#B60001',700:'#A00505',800:'#890303',900:'#720101',950:'#5C0000'},
+ blue:{50:'#E6EEFF',100:'#B4CFFF',200:'#83AFFF',300:'#518DFF',400:'#1A66FF',500:'#0044CC',600:'#003399',700:'#00167E',800:'#000064',900:'#0A004A',950:'#0C0031'},
+ green:{50:'#EDFFE1',100:'#E5FFD9',200:'#A9E88B',300:'#96DB76',400:'#83CF61',500:'#70C24A',600:'#53A22A',700:'#388300',800:'#216400',900:'#0C4700',950:'#002B00'},
+ yellow:{50:'#FFFCE3',100:'#FFF3DA',200:'#FFDA91',300:'#F7C770',400:'#EFB449',500:'#E6A100',600:'#C38100',700:'#A06300',800:'#7D4800',900:'#5A2E00',950:'#381700'}
+};
+/* degraus que o kittu (= o SCSS do produto) realmente usa */
+const USED={pink:[50,100,200,500,700,900],navy:[50,100,300,500,900,950],red:[100,300,500,700],
+ green:[100,200,500,600],yellow:[100,200,500,600],blue:[50,400,500,600],
+ neutral:[0,50,100,300,400,600,700,800,900,950,1000]};
+
+const hx=(f,s)=>P[f][s];
+
+/* theme: [nome, familia, degrau, função] */
+const T_SURF=[
+ ['surface/page','neutral',100,'Fundo da página / app shell'],
+ ['surface/default','neutral',100,'Superfície padrão: card, popover, modal, tabela'],
+ ['surface/hover','neutral',50,'Hover sutil sobre superfície padrão'],
+ ['surface/muted','neutral',300,'Superfície secundária: header de tabela, well, hover neutro'],
+ ['surface/disabled','neutral',300,'Preenchimento de controle desabilitado'],
+ ['surface/inverse','neutral',950,'Superfície escura sobre fundo claro: tooltip, toast']];
+const T_BORD=[
+ ['border/default','neutral',300,'Divisória decorativa: card, tabela, separador'],
+ ['border/disabled','neutral',400,'Divisória de controle desabilitado'],
+ ['border/subtle','neutral',600,'Contorno de controle: input, checkbox'],
+ ['border/strong','neutral',800,'Contorno de controle com mais ênfase'],
+ ['border/primary','pink',500,'Anel de foco — primary'],
+ ['border/secondary','navy',500,'Anel de foco — secondary'],
+ ['border/destructive','red',500,'Anel de foco — destructive'],
+ ['border/success','green',500,'Anel de foco — success'],
+ ['border/warning','yellow',500,'Anel de foco — warning'],
+ ['border/info','blue',500,'Anel de foco — info']];
+const T_FG=[
+ ['foreground/default','neutral',950,'Texto e ícone principal'],
+ ['foreground/strong','neutral',700,'Texto secundário, placeholder, legenda'],
+ ['foreground/subtle','neutral',600,'Texto apagado, abaixo de foreground/strong'],
+ ['foreground/disabled','neutral',300,'Texto e ícone desabilitado'],
+ ['foreground/inverse','neutral',0,'Texto sobre surface/inverse'],
+ ['foreground/on-emphasis','neutral',0,'Texto e ícone sobre fill preenchido'],
+ ['foreground/primary','pink',500,'Texto e ícone de marca'],
+ ['foreground/primary-strong','pink',900,'Texto de marca com ênfase'],
+ ['foreground/secondary','navy',500,'Texto e ícone secondary'],
+ ['foreground/secondary-strong','navy',950,'Texto secondary com ênfase'],
+ ['foreground/destructive','red',500,'Texto e ícone de erro'],
+ ['foreground/destructive-strong','red',700,'Texto de erro com ênfase'],
+ ['foreground/success','green',500,'Texto e ícone de sucesso'],
+ ['foreground/success-strong','green',600,'Texto de sucesso com ênfase'],
+ ['foreground/warning','yellow',500,'Texto e ícone de alerta'],
+ ['foreground/warning-strong','yellow',600,'Texto de alerta com ênfase'],
+ ['foreground/info','blue',500,'Texto e ícone informativo'],
+ ['foreground/info-strong','blue',600,'Texto informativo com ênfase']];
+const ROLES=[
+ ['primary','pink',{default:500,hover:200,pressed:900,subtle:100,focus:500}],
+ ['secondary','navy',{default:500,hover:300,pressed:950,subtle:100,focus:500}],
+ ['success','green',{default:600,hover:200,pressed:600,subtle:100,focus:600}],
+ ['destructive','red',{default:500,hover:300,pressed:700,subtle:100,focus:500}],
+ ['warning','yellow',{default:600,hover:200,pressed:600,subtle:100,focus:600}],
+ ['info','blue',{default:400,hover:400,pressed:600,subtle:50,focus:400}]];
+const STATES=['default','hover','pressed','subtle','focus'];
+const ST_FN={default:'Fill sólido em repouso',hover:'Fill sólido em hover',pressed:'Fill sólido pressionado',
+ subtle:'Superfície tinta: badge, banner, hover de ghost',focus:'Anel de foco'};
+const T_CHART=[['chart/chart-1','pink',500,'Série 1'],['chart/chart-2','blue',400,'Série 2'],
+ ['chart/chart-3','green',600,'Série 3'],['chart/chart-4','yellow',600,'Série 4'],
+ ['chart/chart-5','red',500,'Série 5 — matiz mais próxima da série 1']];
+
+/* kittu numéricos: [nome, px, scss] */
+const K_SPACING=[['quark',4],['nano',8],['xxxs',16],['xxs',24],['xs',32],['sm',40],['md',48],['lg',56],['xl',64],['xxl',72],['xxxl',80]];
+const K_INSET=[['quark',4],['nano',8],['xs',16],['sm',24],['md',32],['lg',40]];
+const K_RADIUS=[['none',0],['xs',4],['sm',8],['md',12],['lg',16],['xl',20],['xxl',24],['xxxl',32],['pill',9999]];
+const K_BW=[['hairline',1],['thin',2],['thick',4],['heavy',8]];
+const K_BP=[['xs',480],['sm',768],['md',960],['lg',1280],['xl',1440],['xxl',1536]];
+const K_CT=[['sm',450],['md',720],['lg',940],['xl',1128],['xxl',1128]];
+const K_OP=[['lighter',.15],['light',.30],['medium',.50],['heavy',.70],['heavier',.85]];
+const K_SIZE=[['xxs',10,'xxs'],['xs',12,'xs'],['sm',14,'sm'],['md',16,'md'],['lg',20,'xl'],['xl',24,'2xl'],['xxl',32,'3xl'],['xxxl',40,'4xl'],['huge',56,'6xl']];
+const K_W=[['extralight',200],['light',300],['regular',400],['medium',500],['semibold',600],['bold',700]];
+
+const PRIM_SIZE=[['xxs',10],['xs',12],['sm',14],['md',16],['lg',18],['xl',20],['2xl',24],['3xl',32],['4xl',40],['5xl',48],['6xl',56],['7xl',72],['8xl',96]];
+const PRIM_W=[['thin',100],['extralight',200],['light',300],['normal',400],['medium',500],['semibold',600],['bold',700],['extrabold',800],['black',900]];
+
+const TYPE=[
+ ['headline-1','Headline/H1','Poppins',56,'huge',700,'bold',125],
+ ['headline-2','Headline/H2','Poppins',40,'xxxl',400,'regular',125],
+ ['headline-3','Headline/H3','Poppins',32,'xxl',400,'regular',125],
+ ['headline-4','Headline/H4','Poppins',24,'xl',400,'regular',150],
+ ['headline-5','Headline/H5','Poppins',20,'lg',600,'semibold',150],
+ ['headline-6','Headline/H6','Poppins',16,'md',500,'medium',150],
+ ['subtitle-lg','Subtitle/Large','Open Sans',20,'lg',400,'regular',150],
+ ['subtitle-sm','Subtitle/Small','Open Sans',16,'md',400,'regular',150],
+ ['body-lg','Body/Large','Open Sans',16,'md',400,'regular',150],
+ ['body-md','Body/Medium','Open Sans',14,'sm',400,'regular',150],
+ ['body-sm','Body/Small','Open Sans',12,'xs',400,'regular',150],
+ ['caption','Label/Caption','Open Sans',12,'xs',400,'regular',150],
+ ['label-md','Label/Medium','Poppins',14,'sm',400,'regular',125],
+ ['label-sm','Label/Small','Poppins',12,'xs',400,'regular',125]];
+
+const SHADOWS=[
+ ['shadow/level-1','0 1px 3px rgba(97,97,97,.12), 0 1px 2px rgba(97,97,97,.24)','y1 b3 12% + y1 b2 24%'],
+ ['shadow/level-2','0 3px 6px rgba(97,97,97,.15), 0 2px 4px rgba(97,97,97,.12)','y3 b6 15% + y2 b4 12%'],
+ ['shadow/level-3','0 10px 20px rgba(97,97,97,.30), 0 3px 6px rgba(97,97,97,.30)','y10 b20 30% + y3 b6 30%'],
+ ['shadow/level-4','0 15px 25px rgba(97,97,97,.15), 0 5px 10px rgba(97,97,97,.05)','y15 b25 15% + y5 b10 5%']];
+
+const V_USED=['0','0,15','0,3','0,5','0,7','0,85','1','2','4','8','10','12','14','16','18','20','24','32','40','48','56','64','72','80','96','450','480','720','768','940','960','1128','1280','1440','1536','9999'];
+const V_FREE=['-8','-0,8','-0,4','0,05','0,1','0,2','0,25','0,4','0,6','0,75','0,8','0,9','0,95','1,25','1,5','1,6','1,75','2,25','2,5','2,75','3','5','6','15','22','25','26','28','30','50','88','104','112','120','128','136','144','160','176','192','200','208','224','240','256','288','300','320','384','400','448','500','512','576','600','640','672','700','800','896','900','1024','1152'];
+
+/* ============ UTIL ============ */
+const lum=h=>{const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255)
+  .map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));
+  return .2126*c[0]+.7152*c[1]+.0722*c[2];};
+const cr=(a,b)=>((Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05));
+const SURF='#F5F5F5';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const el=(h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild;};
+
+/* linha genérica: espécime + nome + (cadeia) + função */
+function row(specHTML,name,chainHTML,fn){
+  return `<div class="row" data-k="${esc(name)} ${esc(fn)}">
+    <div class="spec">${specHTML}</div>
+    <div><div class="nm">${esc(name)}</div>${chainHTML?`<div class="chain">${chainHTML}</div>`:''}</div>
+    <div class="fn-wrap"><div class="fn">${fn}</div></div>
+  </div>`;
+}
+const chainColor=(fam,step)=>`→ <b>kittu</b>/color/${fam}/${step} → <b>_primitives</b> → ${hx(fam,step)}`;
+
+/* pequenos ícones neutros que marcam ONDE um token se aplica (não são cor de token) */
+const gi=(kind)=>{
+  const map={
+    fill:'<span class="gi gi-fill"></span>',
+    text:'<span class="gi gi-text">Aa</span>',
+    stroke:'<span class="gi gi-stroke"></span>',
+    effect:'<span class="gi gi-dashring"></span>',
+    chart:'<span class="gi gi-chart"><i style="height:9px"></i><i style="height:17px"></i><i style="height:13px"></i></span>',
+    gap:'<span class="gi gi-gap"><i></i><i></i></span>',
+    opacity:'<span class="gi gi-opacity"></span>',
+    radius:'<span class="gi gi-radius"></span>',
+    line:'<span class="rule" style="height:3px"></span>',
+    wh:'<span class="gi gi-text" style="font-size:15px">↔</span>',
+    all:'<span class="gi gi-ring"></span>',
+    one:'<span class="gi gi-dots"><i></i></span>',
+    two:'<span class="gi gi-dots"><i></i><span class="ln"></span><i></i></span>',
+    map:'<span class="gi gi-brackets">[ ]</span>'
+  };
+  return map[kind]||'';
+};
+
+/* ============ SEÇÕES ============ */
+const SECTIONS=[];
+
+/* --- 1. gramática dos nomes --- */
+SECTIONS.push({id:'nomes',label:'gramática',n:'',build(){
+ const badge=(name,hex)=>{const r=cr(hex,SURF);return `<span class="ratio ${r>=4.5?'pass':'fail'}">${r.toFixed(2)}:1</span>`;};
+ return `<div class="hero"><span class="hero-eyebrow">Kittu</span><h1>Atlas de Tokens</h1></div>
+ <div class="intro">
+   <p class="big">Esta lib ainda não é o que está em produção, e a estrutura abaixo existe para fechar essa distância aos poucos.</p>
+   <p>O código já tem uma régua de tokens, escrita antes desta estrutura, e a lib vinha divergindo dela: nomes diferentes, valores diferentes, tokens que existem de um lado e não do outro. O plano não é trocar tudo de uma vez.</p>
+   <div class="two">
+     <div><b>kittu</b><span>Espelha o código como ele é hoje. É o contrato com produção — enquanto o SCSS disser <code>$font__size--huge</code>, o Figma diz <code>huge</code>.</span></div>
+     <div><b>_primitives · _values · _type</b><span>Ocultas do consumidor, guardam os valores prontos para a evolução. Cada passo da migração é puxar um valor que já está registrado, em vez de inventar um.</span></div>
+   </div>
+ </div>
+ <div class="h"><h2>A gramática dos nomes</h2></div>
+ <p class="lede">Todo token do arquivo segue o mesmo formato: <b>grupo / papel / variação</b>. Ler o nome já diz onde ele se aplica, sem abrir o Figma.</p>
+ <div class="anat"><div class="anat-in">
+   <div class="line"><span class="p1">foreground</span><span class="sl">/</span><span class="p2">primary</span><span class="p3">-strong</span></div>
+   <div class="legs">
+     <div class="leg" style="flex:0 0 152px"><em>grupo</em>Onde pinta: texto, superfície, borda</div>
+     <div class="leg" style="flex:0 0 88px;margin-left:8px"><em>papel</em>Qual intenção</div>
+     <div class="leg" style="flex:1;margin-left:8px"><em>variação</em>Estado ou ênfase</div>
+   </div>
+ </div></div>
+ <div class="cols2">
+   <div class="card"><h4>_ no início</h4><p>Prefixo de coleção <b>oculta</b>: <code>_values</code>, <code>_primitives</code>, <code>_type</code>. Existem para as camadas de cima apontarem — quem consome a biblioteca não as vê no seletor.</p></div>
+   <div class="card"><h4>default · hover · pressed · subtle · focus</h4><p>Os cinco estados que todo papel de cor tem. <code>subtle</code> é superfície tinta (badge, banner); <code>focus</code> é sempre igual ao <code>default</code>, de propósito.</p></div>
+   <div class="card"><h4>-strong</h4><p>Só em <code>foreground/*</code>. É a versão escurecida, para quando a cor do papel precisa passar como texto sobre fundo claro.</p></div>
+   <div class="card"><h4>Duas grafias convivem</h4><p><code>_primitives</code> usa a do Tailwind (<code>2xl</code>, <code>3xl</code>, <code>normal</code>). <code>kittu</code> usa a do SCSS do produto (<code>xxl</code>, <code>xxxl</code>, <code>huge</code>, <code>regular</code>), porque ali o nome vem do código.</p></div>
+ </div>
+ <h3 class="sub">Como um valor viaja da origem até a tela</h3>
+ <div class="rows">
+   ${row(`<span class="sw" style="background:${hx('pink',500)}"></span>`,'primary/default',
+     `<b>theme</b>/primary/default → <b>kittu</b>/color/pink/500 → <b>_primitives</b>/color/pink/500 → #E3175E`,
+     'Cada camada só conhece a de baixo. Só o <code>_primitives</code> guarda o hex literal.')}
+   ${row(`<span class="bar" style="width:24px"></span>`,'spacing/xxs',
+     `<b>kittu</b>/spacing/xxs → <b>_values</b>/24 → 24`,
+     'Números crus moram no <code>_values</code>; o <code>kittu</code> só dá nome a eles.')}
+ </div>
+ <p class="note">É por isso que o mesmo rótulo pode valer coisas diferentes por camada: <code>font/size/lg</code> é 18px no <code>_primitives</code> e 20px no <code>kittu</code>. O campo <code>codeSyntax</code> de cada variável resolve a dúvida mostrando o nome SCSS exato.</p>`;
+}});
+
+/* --- 1b. escopo + codeSyntax --- */
+SECTIONS.push({id:'consumo',label:'escopo + código',n:'',build(){
+ const sc=(kind,grupo,escopo,porque)=>row(gi(kind),grupo,escopo,porque);
+ const ESC=[
+  ['fill','theme · surface/* e os fills dos 6 papéis','FRAME_FILL · SHAPE_FILL','Preenchimento de container e de forma'],
+  ['text','theme · foreground/*','TEXT_FILL · SHAPE_FILL','Texto e ícone — ícone é vetor, por isso SHAPE_FILL junto'],
+  ['stroke','theme · border/default · disabled · subtle · strong','STROKE_COLOR','Contorno'],
+  ['effect','theme · border/primary · secondary · destructive · success · warning · info','STROKE_COLOR · EFFECT_COLOR','Anel de foco às vezes é sombra, não borda'],
+  ['chart','theme · chart/*','FRAME_FILL · SHAPE_FILL · STROKE_COLOR','Gráfico de linha precisa de stroke'],
+  ['gap','kittu · spacing/* e spacing/inset/*','GAP','No Figma, GAP cobre gap e padding de auto layout'],
+  ['opacity','kittu · opacity/*','OPACITY',''],
+  ['radius','kittu · radius/*','CORNER_RADIUS',''],
+  ['line','kittu · border-width/*','STROKE_FLOAT',''],
+  ['wh','kittu · breakpoint/* e container/*','WIDTH_HEIGHT',''],
+  ['text','kittu · font/*','FONT_SIZE · FONT_WEIGHT · FONT_FAMILY',''],
+  ['all','kittu · as 39 cores','ALL_SCOPES','De propósito: ali é paleta bruta, não papel semântico']];
+ const CS=[
+  ['one','$bloco--modificador','<code>$spacing--quark</code> · <code>$opacity--lighter</code>','Token de um nível só'],
+  ['two','$bloco__elemento--modificador','<code>$font__size--xxs</code> · <code>$spacing__inset--md</code>','Token de dois níveis'],
+  ['map','map-get($mapa, \'chave\')','<code>map-get($container-widths, \'sm\')</code>','Quando o SCSS guarda num map, não numa variável solta']];
+ return `<div class="h"><h2>Escopo e código</h2></div>
+ <p class="lede">Dois campos de cada variável carregam informação que normalmente vive fora do Figma: <b>onde o token pode ser aplicado</b> e <b>como ele se chama no código</b>.</p>
+ <h3 class="sub">Escopo — cada token só aparece onde faz sentido</h3>
+ <p class="note" style="margin:0 0 10px">Sem escopo, cor de texto é oferecida para preencher frame e raio aparece no seletor de fonte. A <code>theme</code> não tem mais nenhum token em <code>ALL_SCOPES</code>.</p>
+ <div class="rows">${ESC.map(e=>sc(e[0],e[1],e[2],e[3])).join('')}</div>
+ <h3 class="sub">codeSyntax — o nome real do código, dentro do Figma</h3>
+ <p class="note" style="margin:0 0 10px">Quem desenha vê <code>spacing/xxs</code>; quem implementa lê <code>$spacing--xxs</code> no mesmo painel. É o que resolve a convivência das duas grafias <b>sem renomear nada</b>.</p>
+ <div class="rows">${CS.map(c=>row(gi(c[0]),c[1],c[2],c[3])).join('')}</div>
+ <p class="note"><b>Preenchido em 42 dos 103 tokens do <code>kittu</code>:</b> os 11 <code>spacing</code>, 6 <code>spacing/inset</code>, 5 <code>opacity</code>, 9 <code>font/size</code>, 6 <code>font/weight</code> e 5 <code>container</code>. Ainda sem: as 39 cores, <code>radius</code> (9), <code>border-width</code> (4), <code>font/family</code> (2) e o overlay — falta confrontar com o SCSS correspondente. Os 6 <code>breakpoint</code> ficaram de fora <b>de propósito</b>: enquanto os nomes estiverem deslocados um degrau em relação ao <code>$grid-breakpoints</code>, preencher o campo cristalizaria o erro.</p>`;
+}});
+
+/* --- 2. theme --- */
+SECTIONS.push({id:'theme',label:'theme',n:69,build(){
+ const fgRow=([n,f,s,fn])=>{const h=hx(f,s);const r=cr(h,SURF);
+   return row(`<span class="sw" style="background:${h}"></span>`,n,chainColor(f,s),
+     `${fn} <span class="ratio ${r>=4.5?'pass':'fail'}">${r.toFixed(2)}:1</span>`);};
+ const cRow=([n,f,s,fn])=>row(`<span class="sw" style="background:${hx(f,s)}"></span>`,n,chainColor(f,s),fn);
+ let mx=`<div class="mx"><div></div>`;
+ STATES.forEach(s=>mx+=`<div class="ch">${s}</div>`);
+ ROLES.forEach(([role,fam,map])=>{
+   mx+=`<div class="rh">${role}</div>`;
+   STATES.forEach(st=>{const step=map[st];const bg=hx(fam,step);
+     const ink=lum(bg)>.4?'#0F1419':'#FFFFFF';
+     const dup=(st!=='default'&&step===map.default)?' •':'';
+     mx+=`<div class="cell" style="background:${bg};color:${ink}" title="${role}/${st} → ${fam}/${step} ${bg}"><u>${fam}/${step}${dup}</u></div>`;});
+ });
+ mx+='</div>';
+ return `<div class="h"><h2>theme</h2><em>69 tokens</em><span class="tag pub">publicada</span></div>
+ <p class="lede">A camada que se aplica ao desenhar. Ninguém escolhe “rosa 500”, escolhe <code>primary/default</code>. Todos apontam para o <code>kittu</code>.</p>
+ <h3 class="sub">Superfície</h3><div class="rows">${T_SURF.map(cRow).join('')}</div>
+ <p class="note">Novidade: <code>surface/hover</code> — um degrau acima do branco, para hover neutro sobre <code>surface/default</code>.</p>
+ <h3 class="sub">Borda</h3><div class="rows">${T_BORD.map(cRow).join('')}</div>
+ <p class="note">O <code>border/focus</code> único virou um anel por papel — <code>border/primary</code>, <code>secondary</code>, <code>destructive</code>, <code>success</code>, <code>warning</code>, <code>info</code> — cada um na cor do próprio papel. <code>border/subtle</code> e <code>border/strong</code> também são novos: dois degraus de contorno de controle, onde antes só havia um.</p>
+ <h3 class="sub">Texto e ícone <span style="text-transform:none;letter-spacing:0;font-weight:400">— contraste medido sobre <code>surface/default</code> #F5F5F5</span></h3>
+ <div class="rows">${T_FG.map(fgRow).join('')}</div>
+ <h3 class="sub">Os 6 papéis × 5 estados</h3>
+ <div class="mx-wrap">${mx}</div>
+ <p class="note">Cada célula mostra o degrau da paleta que alimenta aquele estado. <b>•</b> marca estado cujo valor é idêntico ao <code>default</code>. Função de cada estado: ${STATES.map(s=>`<code>${s}</code> ${ST_FN[s].toLowerCase()}`).join(' · ')}.</p>
+ <h3 class="sub">Gráficos</h3><div class="rows">${T_CHART.map(cRow).join('')}</div>`;
+}});
+
+/* --- 3. kittu --- */
+SECTIONS.push({id:'kittu',label:'kittu',n:103,build(){
+ const ruler=(name,px,scss,trackHTML)=>`<div class="ruler" data-k="${esc(name)} ${esc(scss||'')}">
+   <div class="lab">${esc(name)}</div><div class="px">${px}</div>
+   <div class="track">${trackHTML}</div>
+   <div class="scss">${scss?esc(scss):''}</div></div>`;
+ const sp=a=>a.map(([k,v])=>ruler(`spacing/${k}`,v,`$spacing--${k}`,`<span class="bar" style="width:${v}px"></span>`)).join('');
+ const ins=a=>a.map(([k,v])=>ruler(`spacing/inset/${k}`,v,`$spacing__inset--${k}`,`<span class="bar" style="width:${v}px;background:var(--accent)"></span>`)).join('');
+ const rad=a=>a.map(([k,v])=>ruler(`radius/${k}`,v,'',`<span class="corner" style="border-radius:${Math.min(v,15)}px"></span>`)).join('');
+ const bw=a=>a.map(([k,v])=>ruler(`border-width/${k}`,v,'',`<span class="rule" style="height:${v}px"></span>`)).join('');
+ const bp=a=>a.map(([k,v])=>ruler(`breakpoint/${k}`,v,'',`<span class="bar" style="width:${(v/1536*100).toFixed(1)}%;background:var(--ink-3)"></span>`)).join('');
+ const ct=a=>a.map(([k,v])=>ruler(`container/${k}`,v,`map-get($container-widths,'${k}')`,`<span class="bar" style="width:${(v/1536*100).toFixed(1)}%;background:var(--deep)"></span>`)).join('');
+ const op=a=>a.map(([k,v])=>ruler(`opacity/${k}`,v.toFixed(2),`$opacity--${k}`,`<span class="bar" style="width:76px;background:var(--ink);opacity:${v}"></span>`)).join('');
+ const sz=a=>a.map(([k,v,src])=>ruler(`font/size/${k}`,v,`$font__size--${k}`,`<span class="glyph" style="font-size:${Math.min(v,34)}px">Ag</span> <span class="val" style="margin-left:9px">← _primitives/${src}</span>`)).join('');
+ const wt=a=>a.map(([k,v])=>ruler(`font/weight/${k}`,v,`$font__weight--${k}`,`<span class="glyph" style="font-size:19px;font-weight:${v}">Aa</span>`)).join('');
+ let colors='';
+ Object.keys(USED).forEach(fam=>USED[fam].forEach(s=>{
+   const nm=fam==='neutral'&&s===0?'color/neutral/white':fam==='neutral'&&s===1000?'color/neutral/black':`color/${fam}/${s}`;
+   colors+=row(`<span class="sw" style="background:${hx(fam,s)}"></span>`,nm,
+     `→ <b>_primitives</b>/color/${fam}/${s}`,`${hx(fam,s)}`);}));
+ return `<div class="h"><h2>kittu</h2><em>103 tokens</em><span class="tag pub">publicada</span></div>
+ <p class="lede">Espelha o que existe em <code>sass/src/core/tokens/</code>. Nome daqui não é decisão de design — vem do código. 42 dos 103 já carregam o campo <code>codeSyntax</code> com o nome SCSS.</p>
+ <h3 class="sub">spacing — gap e padding, escala de variações</h3><div class="rows">${sp(K_SPACING)}</div>
+ <p class="note">A escala começa grande: o menor degrau nomeado por tamanho (<code>xxxs</code>) já é 16px. Abaixo disso só <code>quark</code> e <code>nano</code>.</p>
+ <h3 class="sub">spacing/inset — padding de componente, régua separada</h3><div class="rows">${ins(K_INSET)}</div>
+ <p class="note">Os nomes repetem os da escala acima com valores diferentes: <code>inset/xs</code> é 16px, <code>spacing/xs</code> é 32px.</p>
+ <h3 class="sub">radius</h3><div class="rows">${rad(K_RADIUS)}</div>
+ <h3 class="sub">border-width</h3><div class="rows">${bw(K_BW)}</div>
+ <h3 class="sub">opacity</h3><div class="rows">${op(K_OP)}</div>
+ <h3 class="sub">font/size — o produto pula o degrau de 18px</h3><div class="rows">${sz(K_SIZE)}</div>
+ <h3 class="sub">font/weight</h3><div class="rows">${wt(K_W)}</div>
+ <h3 class="sub">breakpoint</h3><div class="rows">${bp(K_BP)}</div>
+ <h3 class="sub">container</h3><div class="rows">${ct(K_CT)}</div>
+ <p class="note"><code>container/xl</code> e <code>container/xxl</code> têm o mesmo valor — isso vem do SCSS, não é erro do Figma.</p>
+ <h3 class="sub">color — os 39 degraus que o produto usa</h3><div class="rows">${colors}</div>`;
+}});
+
+/* --- 4. _primitives --- */
+SECTIONS.push({id:'primitives',label:'_primitives',n:105,build(){
+ let head='<div class="ramp-head"><span></span>'+RAMP.map(s=>`<span>${s}</span>`).join('')+'</div>';
+ let ramps='';
+ Object.keys(P).forEach(fam=>{
+   ramps+=`<div class="ramp" data-k="${fam}"><div class="fam">${fam}</div>`;
+   RAMP.forEach(s=>{
+     const h=P[fam][s];
+     ramps+=h?`<span class="chip${USED[fam].includes(s)?' used':''}" style="background:${h}" title="color/${fam}/${s} · ${h}${USED[fam].includes(s)?' · em uso':' · estoque'}"></span>`:'<span></span>';
+   });
+   ramps+='</div>';
+ });
+ const sz=PRIM_SIZE.map(([k,v])=>`<div class="ruler" data-k="font/size/${k}"><div class="lab">font/size/${k}</div><div class="px">${v}</div><div class="track"><span class="glyph" style="font-size:${Math.min(v,40)}px">Ag</span></div></div>`).join('');
+ const wt=PRIM_W.map(([k,v])=>`<div class="ruler" data-k="font/weight/${k}"><div class="lab">font/weight/${k}</div><div class="px">${v}</div><div class="track"><span class="glyph" style="font-size:19px;font-weight:${v}">Aa</span></div></div>`).join('');
+ return `<div class="h"><h2>_primitives</h2><em>105 tokens</em><span class="tag">oculta</span></div>
+ <p class="lede">O estoque: 79 cores em 7 rampas completas de 50 a 950, mais 26 tokens de tipografia. Única coleção onde cor tem valor literal. <b>Nada aqui se apaga</b> — os 49 tons sem consumidor são o espaço reservado para a paleta crescer.</p>
+ <div class="ramps-wrap"><div class="ramps-in">${head}${ramps}</div></div>
+ <p class="note">O ponto claro marca os degraus que o <code>kittu</code> — e portanto o produto — realmente usa. Os demais são estoque.</p>
+ <h3 class="sub">font/size — convenção Tailwind</h3><div class="rows">${sz}</div>
+ <p class="note"><code>3xl</code> (32), <code>4xl</code> (40) e <code>6xl</code> (56) fogem da régua do Tailwind de propósito: são os tamanhos que os headings do Kittu usam.</p>
+ <h3 class="sub">font/weight</h3><div class="rows">${wt}</div>
+ <h3 class="sub">font/style e font/family</h3>
+ <div class="rows">
+   ${row('<span class="glyph" style="font-size:19px;font-style:italic">Aa</span>','font/style/italic','→ italic','Valor literal string')}
+   ${row('<span class="glyph" style="font-size:19px">Aa</span>','font/style/not-italic','→ normal','Valor literal string')}
+   ${row('<span class="glyph" style="font-size:16px">Ag</span>','font/family/Poppins','→ Poppins','Título e rótulo')}
+   ${row('<span class="glyph" style="font-size:16px;font-family:\'Open Sans\',sans-serif">Ag</span>','font/family/Open Sans','→ Open Sans','Leitura corrida')}
+ </div>`;
+}});
+
+/* --- 5. tipografia --- */
+SECTIONS.push({id:'type',label:'_type',n:42,build(){
+ const rows=TYPE.map(([n,style,fam,px,szTok,w,wTok,lh])=>
+  `<div class="spec-row" data-k="${n} ${style} ${fam}">
+     <div class="meta"><b>${n}</b>${style}<br>${fam} · ${px}px · ${lh}%<br>size <code>${szTok}</code> · weight <code>${wTok}</code></div>
+     <div class="samp" style="font-family:'${fam}',sans-serif;font-size:${Math.min(px,40)}px;font-weight:${w};line-height:${lh/100}">Kittu Design System</div>
+   </div>`).join('');
+ return `<div class="h"><h2>_type</h2><em>42 tokens · 14 Text Styles</em><span class="tag">oculta</span></div>
+ <p class="lede">14 papéis tipográficos, cada um decomposto em <code>font-family</code>, <code>font-size</code> e <code>font-weight</code>. Os 42 saem pelo <code>kittu</code>. A coleção é oculta de propósito: quem desenha aplica o Text Style, não a variável solta.</p>
+ <div class="rows">${rows}</div>
+ <p class="note">Poppins para título e rótulo, Open Sans para leitura corrida. Os 14 styles amarram <code>fontFamily</code>, <code>fontSize</code> e <code>fontWeight</code> no papel correspondente — <b>os 42 tokens do <code>_type</code> têm consumidor</b>. Só <code>lineHeight</code> (125% / 150%) e <code>letterSpacing</code> (0%) seguem chumbados no style, sem token por trás.</p>`;
+}});
+
+/* --- 6. _values --- */
+SECTIONS.push({id:'values',label:'_values',n:99,build(){
+ return `<div class="h"><h2>_values</h2><em>99 tokens</em><span class="tag">oculta</span></div>
+ <p class="lede">O registro de números, onde <b>o nome é o próprio valor</b>. Sem semântica: <code>16</code> é só 16, e pode virar raio, espaçamento ou tamanho de fonte na camada de cima. A vírgula não é descuido — o Figma rejeita ponto em nome de variável.</p>
+ <h3 class="sub">Em uso — 36</h3>
+ <div class="nums" data-k="valores em uso">${V_USED.map(v=>`<span class="num on">${v}</span>`).join('')}</div>
+ <h3 class="sub">Reserva — 63</h3>
+ <div class="nums" data-k="valores reserva estoque">${V_FREE.map(v=>`<span class="num">${v}</span>`).join('')}</div>
+ <p class="note">Os da reserva não têm consumidor e isso é proposital: quando aparecer um valor novo, ele já está registrado e só precisa de um alias. Os negativos servem a deslocamentos; as frações entre 1 e 3 são candidatas a line-height, que ainda não foi tokenizado.</p>`;
+}});
+
+/* --- 7. sombras --- */
+SECTIONS.push({id:'shadow',label:'sombras',n:4,build(){
+ return `<div class="h"><h2>Sombras</h2><em>4 Effect Styles</em></div>
+ <p class="lede">Sombra <b>não é variável</b> — o Figma não tem tipo sombra. Os 4 níveis são Effect Styles, e devem continuar assim. Cada um é composto por duas sombras sobrepostas na cor <code>#616161</code>, que é o <code>neutral/700</code> da paleta.</p>
+ <div class="shadows">${SHADOWS.map(([n,css,desc])=>
+   `<div class="shcard" style="box-shadow:${css}" data-k="${n}"><b>${n.split('/')[1]}</b><span>${desc}</span></div>`).join('')}</div>
+ <p class="note">Nenhuma tem deslocamento horizontal nem spread — a progressão de elevação está no eixo Y e no blur. No SCSS a cor é <code>$shadow__color</code>, marcada como estrutural: não muda entre temas.</p>`;
+}});
+
+/* ============ RENDER ============ */
+const nav=document.getElementById('nav'), main=document.getElementById('main');
+SECTIONS.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.innerHTML=`${s.label}${s.n?`<i>${s.n}</i>`:''}`;
+  b.onclick=()=>go(s.id);
+  b.id='nav-'+s.id;
+  nav.appendChild(b);
+  const sec=document.createElement('section');
+  sec.id=s.id; sec.innerHTML=s.build();
+  main.appendChild(sec);
+});
+function go(id){
+  const t=document.getElementById(id);
+  if(t) t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
+  if(location.hash.slice(1)!==id) history.replaceState(null,'',(location.pathname||'')+'#'+id);
+}
+/* nav ativo por scroll */
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{const b=document.getElementById('nav-'+e.target.id);
+    if(b) b.setAttribute('aria-current',e.isIntersecting?'true':'false');});
+},{rootMargin:'-104px 0px -72% 0px'});
+SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+if(/^[a-z]+$/.test(location.hash.slice(1))) go(location.hash.slice(1));
+
+/* busca */
+const q=document.getElementById('q');
+q.addEventListener('input',()=>{
+  const v=q.value.trim().toLowerCase();
+  if(!v){
+    document.querySelectorAll('[data-k],section,h3.sub,.intro,.lede,.note,.anat,.cols2,.ramps-wrap,.mx-wrap,.shadows,.rows,.nums').forEach(n=>n.hidden=false);
+    document.querySelectorAll('.empty').forEach(n=>n.remove());
+    return;
+  }
+  document.querySelectorAll('.intro,.lede,.note,.anat,.cols2').forEach(n=>n.hidden=true);
+  let hits=0;
+  document.querySelectorAll('[data-k]').forEach(n=>{
+    const on=n.dataset.k.toLowerCase().includes(v);
+    n.hidden=!on; if(on) hits++;
+  });
+  document.querySelectorAll('.ramps-wrap,.mx-wrap,.shadows').forEach(n=>{
+    const on=[...n.querySelectorAll('[data-k]')].some(c=>!c.hidden); n.hidden=!on;
+  });
+  document.querySelectorAll('section').forEach(sec=>{
+    const on=[...sec.querySelectorAll('[data-k]')].some(c=>!c.hidden);
+    sec.hidden=!on;
+    sec.querySelectorAll('h3.sub').forEach(h=>{
+      let sib=h.nextElementSibling, vis=false;
+      while(sib&&sib.tagName!=='H3'){ if(sib.matches('.rows,.nums,.ramps-wrap,.mx-wrap,.shadows')&&!sib.hidden) vis=true; sib=sib.nextElementSibling; }
+      h.hidden=!vis;
+    });
+    sec.querySelectorAll('.rows,.nums').forEach(g=>{
+      g.hidden=![...g.querySelectorAll('[data-k]')].some(c=>!c.hidden);
+    });
+  });
+  if(!hits&&!main.querySelector('.empty')){
+    const e=document.createElement('div'); e.className='empty';
+    e.textContent='Nenhum token com esse nome.'; main.appendChild(e);
+  } else if(hits){ document.querySelectorAll('.empty').forEach(n=>n.remove()); }
+});
+</script>
+</body>
+</html>
