@@ -2,8 +2,6 @@
 
 Referência dos design tokens do arquivo Figma **Kittu | Akad Design System** | coleções `theme`, `kittu`, `_primitives`, `_type`, `_values` e os Effect Styles de sombra.
 
-🔗 **[Ver a página publicada](https://crispy-parakeet-r2zmo9j.pages.github.io/)** (GitHub Pages — precisa estar logada no GitHub como membro da organização Akad-Seguros)
-
 Página estática (`index.html`) gerada a partir do estado atual do arquivo Figma. Abra localmente no navegador ou publique via GitHub Pages (Settings → Pages → branch `main`, pasta `/`).
 
 Sem processo de build, é um único arquivo HTML autocontido (CSS + JS inline, sem dependências além de fontes do Google Fonts).
@@ -31,12 +29,12 @@ brew install gh
 gh auth login --hostname github.com --git-protocol https --web
 ```
 
-Isso abre o navegador pra você autorizar com a sua conta do GitHub — precisa ter acesso à organização **Akad-Seguros**. Depois de autenticado, o `git push`/`git pull` já funcionam sem pedir usuário e senha de novo (o `gh` configura o credential helper do git automaticamente).
+Isso abre o navegador pra você autorizar com a sua conta do GitHub. Depois de autenticado, o `git push`/`git pull` já funcionam sem pedir usuário e senha de novo (o `gh` configura o credential helper do git automaticamente).
 
 ### Clonar
 
 ```bash
-gh repo clone Akad-Seguros/kittu-token-atlas
+gh repo clone cellasouzas/kittu-token-atlas
 cd kittu-token-atlas
 ```
 
@@ -55,6 +53,6 @@ O GitHub Pages redeploya automaticamente a cada push na branch `main`.
 ### Comandos úteis
 
 ```bash
-gh repo view Akad-Seguros/kittu-token-atlas --web   # abre o repo no navegador
+gh repo view cellasouzas/kittu-token-atlas --web   # abre o repo no navegador
 gh auth status                                       # confirma se está logada e com qual conta
 ```
