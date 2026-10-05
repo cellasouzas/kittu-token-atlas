@@ -220,8 +220,6 @@ h3.sub{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:upperc
 .spec-row .meta b{display:block;color:var(--ink);font-size:12.5px;font-weight:500}
 .spec-row .samp{flex:1;min-width:0;color:var(--ink);overflow:hidden}
 
-/* ---------- shadows ---------- */
-.shadows{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
 .shcard{background:var(--surface);border-radius:9px;padding:16px;text-align:center}
 .shcard b{font-family:var(--font-mono);font-size:12px;font-weight:500;display:block}
 .shcard span{font-size:11px;color:var(--ink-3);font-family:var(--font-mono)}
@@ -392,20 +390,6 @@ const TYPE=[
  ['caption','Label/Caption','Open Sans',12,'xs',400,'regular',150],
  ['label-md','Label/Medium','Poppins',14,'sm',400,'regular',125],
  ['label-sm','Label/Small','Poppins',12,'xs',400,'regular',125]];
-
-const SHADOWS=[
- ['Old Shadows/shadow-level-1','0 1px 2px rgba(97,97,97,.30), 0 1px 3px rgba(97,97,97,.30)','y1 b2 30% + y1 b3 30%'],
- ['Old Shadows/shadow-level-2','0 2px 4px rgba(97,97,97,.30), 0 3px 6px rgba(97,97,97,.30)','y2 b4 30% + y3 b6 30%'],
- ['Old Shadows/shadow-level-3','0 3px 6px rgba(97,97,97,.30), 0 10px 20px rgba(97,97,97,.30)','y3 b6 30% + y10 b20 30%'],
- ['Old Shadows/shadow-level-4','0 5px 10px rgba(97,97,97,.30), 0 15px 25px rgba(97,97,97,.30)','y5 b10 30% + y15 b25 30%']];
-const SHADOWS_TW=[
- ['Tailwind Conventions/shadow-sm','0 1px 2px rgba(97,97,97,.05)','y1 b2 5%'],
- ['Tailwind Conventions/shadow','0 1px 3px rgba(97,97,97,.10), 0 1px 2px rgba(97,97,97,.06)','y1 b3 10% + y1 b2 6%'],
- ['Tailwind Conventions/shadow-md','0 4px 6px -1px rgba(97,97,97,.10), 0 2px 4px -1px rgba(97,97,97,.06)','y4 b6 s-1 10% + y2 b4 s-1 6%'],
- ['Tailwind Conventions/shadow-lg','0 10px 15px -3px rgba(97,97,97,.10), 0 4px 6px -2px rgba(97,97,97,.05)','y10 b15 s-3 10% + y4 b6 s-2 5%'],
- ['Tailwind Conventions/shadow-xl','0 20px 25px -5px rgba(0,0,0,.10), 0 10px 10px -5px rgba(97,97,97,.04)','y20 b25 s-5 10% (#000) + y10 b10 s-5 4%'],
- ['Tailwind Conventions/shadow-2xl','0 25px 50px -12px rgba(97,97,97,.25)','y25 b50 s-12 25%'],
- ['Tailwind Conventions/shadow-inner','inset 0 2px 4px rgba(97,97,97,.06)','inner y2 b4 6%']];
 
 const V_USED=['0','0,15','0,3','0,5','0,7','0,85','1','2','4','8','10','12','14','16','18','20','24','32','40','48','56','64','72','80','96','450','480','720','768','940','960','1128','1280','1440','1536','9999'];
 const V_FREE=['-8','-0,8','-0,4','0,05','0,1','0,2','0,25','0,4','0,6','0,75','0,8','0,9','0,95','1,25','1,5','1,6','1,75','2,25','2,5','2,75','3','5','6','15','22','25','26','28','30','50','88','104','112','120','128','136','144','160','176','192','200','208','224','240','256','288','300','320','384','400','448','500','512','576','600','640','672','700','800','896','900','1024','1152'];
@@ -643,18 +627,6 @@ SECTIONS.push({id:'values',label:'_values',n:99,build(){
  <h3 class="sub">Reserva — 63</h3>
  <div class="nums" data-k="valores reserva estoque">${V_FREE.map(v=>`<span class="num">${v}</span>`).join('')}</div>
  <p class="note">Os da reserva não têm consumidor e isso é proposital: quando aparecer um valor novo, ele já está registrado e só precisa de um alias. Os negativos servem a deslocamentos; as frações entre 1 e 3 são candidatas a line-height, que ainda não foi tokenizado.</p>`;
-}});
-
-/* --- 7. sombras --- */
-SECTIONS.push({id:'shadow',label:'sombras',n:11,build(){
- const cards=a=>`<div class="shadows">${a.map(([n,css,desc])=>
-   `<div class="shcard" style="box-shadow:${css}" data-k="${n}"><b>${n.split('/')[1]}</b><span>${desc}</span></div>`).join('')}</div>`;
- return `<div class="h"><h2>Sombras</h2><em>11 Effect Styles</em></div>
- <p class="lede">Sombra <b>não é variável</b> — o Figma não tem tipo sombra. São Effect Styles, em dois grupos, todos na cor <code>#616161</code> (o <code>neutral/700</code> da paleta).</p>
- <h3 class="sub">Tailwind Conventions — 7 estilos</h3>${cards(SHADOWS_TW)}
- <p class="note">Mesmos offsets, blurs, spreads e opacidades da escala de sombras do Tailwind, trocando o preto pelo <code>#616161</code>. Única exceção: a primeira camada do <code>shadow-xl</code> ainda está em <code>#000000</code>.</p>
- <h3 class="sub">Old Shadows — os 4 níveis anteriores</h3>${cards(SHADOWS)}
- <p class="note">Os 4 níveis originais, agora agrupados como <code>Old Shadows</code>, com as duas camadas de cada um a 30%. No SCSS a cor é <code>$shadow__color</code>, marcada como estrutural: não muda entre temas.</p>`;
 }});
 
 /* ============ RENDER ============ */
