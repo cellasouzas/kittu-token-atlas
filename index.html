@@ -364,7 +364,7 @@ const T_CHART=[['chart/chart-1','pink',500,'Série 1'],['chart/chart-2','blue',4
 /* kittu numéricos: [nome, px, scss] */
 const K_SPACING=[['quark',4],['nano',8],['xxxs',16],['xxs',24],['xs',32],['sm',40],['md',48],['lg',56],['xl',64],['xxl',72],['xxxl',80]];
 const K_INSET=[['quark',4],['nano',8],['xs',16],['sm',24],['md',32],['lg',40]];
-const K_RADIUS=[['none',0],['xs',4],['sm',8],['md',12],['lg',16],['xl',20],['xxl',24],['xxxl',32],['pill',9999]];
+const K_RADIUS=[['none',0],['xs',4,'sm'],['sm',8,'md'],['md',12],['lg',16,'lg'],['xl',20],['xxl',24,'xl'],['xxxl',32],['pill',9999]];
 const K_BW=[['hairline',1],['thin',2],['thick',4],['heavy',8]];
 const K_BP=[['xs',480],['sm',768],['md',960],['lg',1280],['xl',1440],['xxl',1536]];
 const K_CT=[['sm',450],['md',720],['lg',940],['xl',1128],['xxl',1128]];
@@ -505,7 +505,7 @@ SECTIONS.push({id:'consumo',label:'escopo + código',n:'',build(){
  <h3 class="sub">codeSyntax — o nome real do código, dentro do Figma</h3>
  <p class="note" style="margin:0 0 10px">Quem desenha vê <code>spacing/xxs</code>; quem implementa lê <code>$spacing--xxs</code> no mesmo painel. É o que resolve a convivência das duas grafias <b>sem renomear nada</b>.</p>
  <div class="rows">${CS.map(c=>row(gi(c[0]),c[1],c[2],c[3])).join('')}</div>
- <p class="note"><b>Preenchido em 42 dos 103 tokens do <code>kittu</code>:</b> os 11 <code>spacing</code>, 6 <code>spacing/inset</code>, 5 <code>opacity</code>, 9 <code>font/size</code>, 6 <code>font/weight</code> e 5 <code>container</code>. Ainda sem: as 39 cores, <code>radius</code> (9), <code>border-width</code> (4), <code>font/family</code> (2) e o overlay — falta confrontar com o SCSS correspondente. Os 6 <code>breakpoint</code> ficaram de fora <b>de propósito</b>: enquanto os nomes estiverem deslocados um degrau em relação ao <code>$grid-breakpoints</code>, preencher o campo cristalizaria o erro.</p>`;
+ <p class="note"><b>Preenchido em 50 dos 103 tokens do <code>kittu</code>:</b> os 11 <code>spacing</code>, 6 <code>spacing/inset</code>, 5 <code>opacity</code>, 9 <code>font/size</code>, 6 <code>font/weight</code>, 5 <code>container</code>, 4 <code>border-width</code> e 4 <code>radius</code>. Ainda sem: as 39 cores, 5 <code>radius</code>, <code>font/family</code> (2) e o overlay — falta confrontar com o SCSS correspondente. Os 6 <code>breakpoint</code> ficaram de fora <b>de propósito</b>: enquanto os nomes estiverem deslocados um degrau em relação ao <code>$grid-breakpoints</code>, preencher o campo cristalizaria o erro.</p>`;
 }});
 
 /* --- 2. theme --- */
@@ -546,8 +546,8 @@ SECTIONS.push({id:'kittu',label:'kittu',n:103,build(){
    <div class="scss">${scss?esc(scss):''}</div></div>`;
  const sp=a=>a.map(([k,v])=>ruler(`spacing/${k}`,v,`$spacing--${k}`,`<span class="bar" style="width:${v}px"></span>`)).join('');
  const ins=a=>a.map(([k,v])=>ruler(`spacing/inset/${k}`,v,`$spacing__inset--${k}`,`<span class="bar" style="width:${v}px;background:var(--accent)"></span>`)).join('');
- const rad=a=>a.map(([k,v])=>ruler(`radius/${k}`,v,'',`<span class="corner" style="border-radius:${Math.min(v,15)}px"></span>`)).join('');
- const bw=a=>a.map(([k,v])=>ruler(`border-width/${k}`,v,'',`<span class="rule" style="height:${v}px"></span>`)).join('');
+ const rad=a=>a.map(([k,v,c])=>ruler(`radius/${k}`,v,c?`$border__radius--${c}`:'',`<span class="corner" style="border-radius:${Math.min(v,15)}px"></span>`)).join('');
+ const bw=a=>a.map(([k,v])=>ruler(`border-width/${k}`,v,`$border__width--${k}`,`<span class="rule" style="height:${v}px"></span>`)).join('');
  const bp=a=>a.map(([k,v])=>ruler(`breakpoint/${k}`,v,'',`<span class="bar" style="width:${(v/1536*100).toFixed(1)}%;background:var(--ink-3)"></span>`)).join('');
  const ct=a=>a.map(([k,v])=>ruler(`container/${k}`,v,`map-get($container-widths,'${k}')`,`<span class="bar" style="width:${(v/1536*100).toFixed(1)}%;background:var(--deep)"></span>`)).join('');
  const op=a=>a.map(([k,v])=>ruler(`opacity/${k}`,v.toFixed(2),`$opacity--${k}`,`<span class="bar" style="width:76px;background:var(--ink);opacity:${v}"></span>`)).join('');
@@ -559,13 +559,14 @@ SECTIONS.push({id:'kittu',label:'kittu',n:103,build(){
    colors+=row(`<span class="sw" style="background:${hx(fam,s)}"></span>`,nm,
      `→ <b>_primitives</b>/color/${fam}/${s}`,`${hx(fam,s)}`);}));
  return `<div class="h"><h2>kittu</h2><em>103 tokens</em><span class="tag pub">publicada</span></div>
- <p class="lede">Espelha o que existe em <code>sass/src/core/tokens/</code>. Nome daqui não é decisão de design — vem do código. 42 dos 103 já carregam o campo <code>codeSyntax</code> com o nome SCSS.</p>
+ <p class="lede">Espelha o que existe em <code>sass/src/core/tokens/</code>. Nome daqui não é decisão de design — vem do código. 50 dos 103 já carregam o campo <code>codeSyntax</code> com o nome SCSS.</p>
  <h3 class="sub">spacing — gap e padding, escala de variações</h3><div class="rows">${sp(K_SPACING)}</div>
  <p class="note">A escala começa grande: o menor degrau nomeado por tamanho (<code>xxxs</code>) já é 16px. Abaixo disso só <code>quark</code> e <code>nano</code>.</p>
  <h3 class="sub">spacing/inset — padding de componente, régua separada</h3><div class="rows">${ins(K_INSET)}</div>
  <p class="note">Os nomes repetem os da escala acima com valores diferentes: <code>inset/xs</code> é 16px, <code>spacing/xs</code> é 32px.</p>
- <h3 class="sub">radius</h3><div class="rows">${rad(K_RADIUS)}</div>
+ <h3 class="sub">radius — nomes deslocados em relação ao SCSS</h3><div class="rows">${rad(K_RADIUS)}</div>
  <h3 class="sub">border-width</h3><div class="rows">${bw(K_BW)}</div>
+ <p class="note"><code>radius</code> foi ligado ao SCSS pelo valor, não pelo nome: <code>radius/xs</code> (4px) é <code>$border__radius--sm</code>, <code>radius/sm</code> (8px) é <code>--md</code>, <code>radius/xxl</code> (24px) é <code>--xl</code>. Sem par no código: <code>none</code>, <code>md</code> (12), <code>xl</code> (20), <code>xxxl</code> (32) e <code>pill</code> — no SCSS o pill é 500px, aqui 9999. O <code>$border__radius--circular</code> (50%) não existe no Figma.</p>
  <h3 class="sub">opacity</h3><div class="rows">${op(K_OP)}</div>
  <h3 class="sub">font/size — o produto pula o degrau de 18px</h3><div class="rows">${sz(K_SIZE)}</div>
  <h3 class="sub">font/weight</h3><div class="rows">${wt(K_W)}</div>
