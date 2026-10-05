@@ -411,6 +411,7 @@ function row(specHTML,name,chainHTML,fn){
     <div class="fn-wrap"><div class="fn">${fn}</div></div>
   </div>`;
 }
+const csT=n=>{const p=n.split('/');return `$${p[0]}--${p.slice(1).join('-')}`;};
 const chainColor=(fam,step)=>`→ <b>kittu</b>/color/${fam}/${step} → <b>_primitives</b> → ${hx(fam,step)}`;
 
 /* pequenos ícones neutros que marcam ONDE um token se aplica (não são cor de token) */
@@ -511,9 +512,9 @@ SECTIONS.push({id:'consumo',label:'escopo + código',n:'',build(){
 /* --- 2. theme --- */
 SECTIONS.push({id:'theme',label:'theme',n:71,build(){
  const fgRow=([n,f,s,fn])=>{const h=hx(f,s);const r=cr(h,SURF);
-   return row(`<span class="sw" style="background:${h}"></span>`,n,chainColor(f,s),
+   return row(`<span class="sw" style="background:${h}"></span>`,n,`${chainColor(f,s)} · <b>${csT(n)}</b>`,
      `${fn} <span class="ratio ${r>=4.5?'pass':'fail'}">${r.toFixed(2)}:1</span>`);};
- const cRow=([n,f,s,fn])=>row(`<span class="sw" style="background:${hx(f,s)}"></span>`,n,chainColor(f,s),fn);
+ const cRow=([n,f,s,fn])=>row(`<span class="sw" style="background:${hx(f,s)}"></span>`,n,`${chainColor(f,s)} · <b>${csT(n)}</b>`,fn);
  let mx=`<div class="mx"><div></div>`;
  STATES.forEach(s=>mx+=`<div class="ch">${s}</div>`);
  ROLES.forEach(([role,fam,map])=>{
@@ -521,11 +522,11 @@ SECTIONS.push({id:'theme',label:'theme',n:71,build(){
    STATES.forEach(st=>{const step=map[st];const bg=hx(fam,step);
      const ink=lum(bg)>.4?'#0F1419':'#FFFFFF';
      const dup=(st!=='default'&&step===map.default)?' •':'';
-     mx+=`<div class="cell" style="background:${bg};color:${ink}" title="${role}/${st} → ${fam}/${step} ${bg}"><u>${fam}/${step}${dup}</u></div>`;});
+     mx+=`<div class="cell" style="background:${bg};color:${ink}" title="${role}/${st} · ${csT(role+'/'+st)} → ${fam}/${step} ${bg}"><u>${fam}/${step}${dup}</u></div>`;});
  });
  mx+='</div>';
  return `<div class="h"><h2>theme</h2><em>71 tokens</em><span class="tag pub">publicada</span></div>
- <p class="lede">A camada que se aplica ao desenhar. Ninguém escolhe “rosa 500”, escolhe <code>primary/default</code>. Todos apontam para o <code>kittu</code>.</p>
+ <p class="lede">A camada que se aplica ao desenhar. Ninguém escolhe “rosa 500”, escolhe <code>primary/default</code>. Todos apontam para o <code>kittu</code>. Os 71 carregam <code>codeSyntax</code> no padrão do SCSS: <code>$grupo--variação</code> — <code>primary/subtle</code> vira <code>$primary--subtle</code>, <code>foreground/primary-strong</code> vira <code>$foreground--primary-strong</code>.</p>
  <h3 class="sub">Superfície</h3><div class="rows">${T_SURF.map(cRow).join('')}</div>
  <p class="note">Novidade: <code>surface/hover</code> — um degrau acima do branco, para hover neutro sobre <code>surface/default</code>.</p>
  <h3 class="sub">Borda</h3><div class="rows">${T_BORD.map(cRow).join('')}</div>
