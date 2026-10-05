@@ -312,13 +312,15 @@ const hx=(f,s)=>P[f][s];
 /* theme: [nome, familia, degrau, função] */
 const T_SURF=[
  ['surface/page','neutral',100,'Fundo da página / app shell'],
- ['surface/default','neutral',100,'Superfície padrão: card, popover, modal, tabela'],
+ ['surface/default','neutral',0,'Superfície padrão: card, popover, modal, tabela'],
  ['surface/hover','neutral',50,'Hover sutil sobre superfície padrão'],
  ['surface/muted','neutral',300,'Superfície secundária: header de tabela, well, hover neutro'],
  ['surface/disabled','neutral',300,'Preenchimento de controle desabilitado'],
+ ['surface/subtle','neutral',50,'Superfície sutil sobre surface/default'],
  ['surface/inverse','neutral',950,'Superfície escura sobre fundo claro: tooltip, toast']];
 const T_BORD=[
  ['border/default','neutral',300,'Divisória decorativa: card, tabela, separador'],
+ ['border/muted','neutral',400,'Divisória com mais presença que border/default'],
  ['border/disabled','neutral',400,'Divisória de controle desabilitado'],
  ['border/subtle','neutral',600,'Contorno de controle: input, checkbox'],
  ['border/strong','neutral',800,'Contorno de controle com mais ênfase'],
@@ -332,7 +334,7 @@ const T_FG=[
  ['foreground/default','neutral',950,'Texto e ícone principal'],
  ['foreground/strong','neutral',700,'Texto secundário, placeholder, legenda'],
  ['foreground/subtle','neutral',600,'Texto apagado, abaixo de foreground/strong'],
- ['foreground/disabled','neutral',300,'Texto e ícone desabilitado'],
+ ['foreground/disabled','neutral',400,'Texto e ícone desabilitado'],
  ['foreground/inverse','neutral',0,'Texto sobre surface/inverse'],
  ['foreground/on-emphasis','neutral',0,'Texto e ícone sobre fill preenchido'],
  ['foreground/primary','pink',500,'Texto e ícone de marca'],
@@ -352,7 +354,7 @@ const ROLES=[
  ['secondary','navy',{default:500,hover:300,pressed:950,subtle:100,focus:500}],
  ['success','green',{default:600,hover:200,pressed:600,subtle:100,focus:600}],
  ['destructive','red',{default:500,hover:300,pressed:700,subtle:100,focus:500}],
- ['warning','yellow',{default:600,hover:200,pressed:600,subtle:100,focus:600}],
+ ['warning','yellow',{default:500,hover:200,pressed:600,subtle:100,focus:600}],
  ['info','blue',{default:400,hover:400,pressed:600,subtle:50,focus:400}]];
 const STATES=['default','hover','pressed','subtle','focus'];
 const ST_FN={default:'Fill sólido em repouso',hover:'Fill sólido em hover',pressed:'Fill sólido pressionado',
@@ -392,10 +394,18 @@ const TYPE=[
  ['label-sm','Label/Small','Poppins',12,'xs',400,'regular',125]];
 
 const SHADOWS=[
- ['shadow/level-1','0 1px 3px rgba(97,97,97,.12), 0 1px 2px rgba(97,97,97,.24)','y1 b3 12% + y1 b2 24%'],
- ['shadow/level-2','0 3px 6px rgba(97,97,97,.15), 0 2px 4px rgba(97,97,97,.12)','y3 b6 15% + y2 b4 12%'],
- ['shadow/level-3','0 10px 20px rgba(97,97,97,.30), 0 3px 6px rgba(97,97,97,.30)','y10 b20 30% + y3 b6 30%'],
- ['shadow/level-4','0 15px 25px rgba(97,97,97,.15), 0 5px 10px rgba(97,97,97,.05)','y15 b25 15% + y5 b10 5%']];
+ ['Old Shadows/shadow-level-1','0 1px 2px rgba(97,97,97,.30), 0 1px 3px rgba(97,97,97,.30)','y1 b2 30% + y1 b3 30%'],
+ ['Old Shadows/shadow-level-2','0 2px 4px rgba(97,97,97,.30), 0 3px 6px rgba(97,97,97,.30)','y2 b4 30% + y3 b6 30%'],
+ ['Old Shadows/shadow-level-3','0 3px 6px rgba(97,97,97,.30), 0 10px 20px rgba(97,97,97,.30)','y3 b6 30% + y10 b20 30%'],
+ ['Old Shadows/shadow-level-4','0 5px 10px rgba(97,97,97,.30), 0 15px 25px rgba(97,97,97,.30)','y5 b10 30% + y15 b25 30%']];
+const SHADOWS_TW=[
+ ['Tailwind Conventions/shadow-sm','0 1px 2px rgba(97,97,97,.05)','y1 b2 5%'],
+ ['Tailwind Conventions/shadow','0 1px 3px rgba(97,97,97,.10), 0 1px 2px rgba(97,97,97,.06)','y1 b3 10% + y1 b2 6%'],
+ ['Tailwind Conventions/shadow-md','0 4px 6px -1px rgba(97,97,97,.10), 0 2px 4px -1px rgba(97,97,97,.06)','y4 b6 s-1 10% + y2 b4 s-1 6%'],
+ ['Tailwind Conventions/shadow-lg','0 10px 15px -3px rgba(97,97,97,.10), 0 4px 6px -2px rgba(97,97,97,.05)','y10 b15 s-3 10% + y4 b6 s-2 5%'],
+ ['Tailwind Conventions/shadow-xl','0 20px 25px -5px rgba(0,0,0,.10), 0 10px 10px -5px rgba(97,97,97,.04)','y20 b25 s-5 10% (#000) + y10 b10 s-5 4%'],
+ ['Tailwind Conventions/shadow-2xl','0 25px 50px -12px rgba(97,97,97,.25)','y25 b50 s-12 25%'],
+ ['Tailwind Conventions/shadow-inner','inset 0 2px 4px rgba(97,97,97,.06)','inner y2 b4 6%']];
 
 const V_USED=['0','0,15','0,3','0,5','0,7','0,85','1','2','4','8','10','12','14','16','18','20','24','32','40','48','56','64','72','80','96','450','480','720','768','940','960','1128','1280','1440','1536','9999'];
 const V_FREE=['-8','-0,8','-0,4','0,05','0,1','0,2','0,25','0,4','0,6','0,75','0,8','0,9','0,95','1,25','1,5','1,6','1,75','2,25','2,5','2,75','3','5','6','15','22','25','26','28','30','50','88','104','112','120','128','136','144','160','176','192','200','208','224','240','256','288','300','320','384','400','448','500','512','576','600','640','672','700','800','896','900','1024','1152'];
@@ -405,7 +415,7 @@ const lum=h=>{const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255)
   .map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));
   return .2126*c[0]+.7152*c[1]+.0722*c[2];};
 const cr=(a,b)=>((Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05));
-const SURF='#F5F5F5';
+const SURF='#FFFFFF';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const el=(h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstElementChild;};
 
@@ -467,7 +477,7 @@ SECTIONS.push({id:'nomes',label:'gramática',n:'',build(){
  </div></div>
  <div class="cols2">
    <div class="card"><h4>_ no início</h4><p>Prefixo de coleção <b>oculta</b>: <code>_values</code>, <code>_primitives</code>, <code>_type</code>. Existem para as camadas de cima apontarem — quem consome a biblioteca não as vê no seletor.</p></div>
-   <div class="card"><h4>default · hover · pressed · subtle · focus</h4><p>Os cinco estados que todo papel de cor tem. <code>subtle</code> é superfície tinta (badge, banner); <code>focus</code> é sempre igual ao <code>default</code>, de propósito.</p></div>
+   <div class="card"><h4>default · hover · pressed · subtle · focus</h4><p>Os cinco estados que todo papel de cor tem. <code>subtle</code> é superfície tinta (badge, banner); <code>focus</code> segue o <code>default</code> — hoje a exceção é <code>warning</code> (default 500, focus 600).</p></div>
    <div class="card"><h4>-strong</h4><p>Só em <code>foreground/*</code>. É a versão escurecida, para quando a cor do papel precisa passar como texto sobre fundo claro.</p></div>
    <div class="card"><h4>Duas grafias convivem</h4><p><code>_primitives</code> usa a do Tailwind (<code>2xl</code>, <code>3xl</code>, <code>normal</code>). <code>kittu</code> usa a do SCSS do produto (<code>xxl</code>, <code>xxxl</code>, <code>huge</code>, <code>regular</code>), porque ali o nome vem do código.</p></div>
  </div>
@@ -489,7 +499,7 @@ SECTIONS.push({id:'consumo',label:'escopo + código',n:'',build(){
  const ESC=[
   ['fill','theme · surface/* e os fills dos 6 papéis','FRAME_FILL · SHAPE_FILL','Preenchimento de container e de forma'],
   ['text','theme · foreground/*','TEXT_FILL · SHAPE_FILL','Texto e ícone — ícone é vetor, por isso SHAPE_FILL junto'],
-  ['stroke','theme · border/default · disabled · subtle · strong','STROKE_COLOR','Contorno'],
+  ['stroke','theme · border/default · muted · disabled · subtle · strong','STROKE_COLOR','Contorno'],
   ['effect','theme · border/primary · secondary · destructive · success · warning · info','STROKE_COLOR · EFFECT_COLOR','Anel de foco às vezes é sombra, não borda'],
   ['chart','theme · chart/*','FRAME_FILL · SHAPE_FILL · STROKE_COLOR','Gráfico de linha precisa de stroke'],
   ['gap','kittu · spacing/* e spacing/inset/*','GAP','No Figma, GAP cobre gap e padding de auto layout'],
@@ -515,7 +525,7 @@ SECTIONS.push({id:'consumo',label:'escopo + código',n:'',build(){
 }});
 
 /* --- 2. theme --- */
-SECTIONS.push({id:'theme',label:'theme',n:69,build(){
+SECTIONS.push({id:'theme',label:'theme',n:71,build(){
  const fgRow=([n,f,s,fn])=>{const h=hx(f,s);const r=cr(h,SURF);
    return row(`<span class="sw" style="background:${h}"></span>`,n,chainColor(f,s),
      `${fn} <span class="ratio ${r>=4.5?'pass':'fail'}">${r.toFixed(2)}:1</span>`);};
@@ -530,13 +540,13 @@ SECTIONS.push({id:'theme',label:'theme',n:69,build(){
      mx+=`<div class="cell" style="background:${bg};color:${ink}" title="${role}/${st} → ${fam}/${step} ${bg}"><u>${fam}/${step}${dup}</u></div>`;});
  });
  mx+='</div>';
- return `<div class="h"><h2>theme</h2><em>69 tokens</em><span class="tag pub">publicada</span></div>
+ return `<div class="h"><h2>theme</h2><em>71 tokens</em><span class="tag pub">publicada</span></div>
  <p class="lede">A camada que se aplica ao desenhar. Ninguém escolhe “rosa 500”, escolhe <code>primary/default</code>. Todos apontam para o <code>kittu</code>.</p>
  <h3 class="sub">Superfície</h3><div class="rows">${T_SURF.map(cRow).join('')}</div>
  <p class="note">Novidade: <code>surface/hover</code> — um degrau acima do branco, para hover neutro sobre <code>surface/default</code>.</p>
  <h3 class="sub">Borda</h3><div class="rows">${T_BORD.map(cRow).join('')}</div>
  <p class="note">O <code>border/focus</code> único virou um anel por papel — <code>border/primary</code>, <code>secondary</code>, <code>destructive</code>, <code>success</code>, <code>warning</code>, <code>info</code> — cada um na cor do próprio papel. <code>border/subtle</code> e <code>border/strong</code> também são novos: dois degraus de contorno de controle, onde antes só havia um.</p>
- <h3 class="sub">Texto e ícone <span style="text-transform:none;letter-spacing:0;font-weight:400">— contraste medido sobre <code>surface/default</code> #F5F5F5</span></h3>
+ <h3 class="sub">Texto e ícone <span style="text-transform:none;letter-spacing:0;font-weight:400">— contraste medido sobre <code>surface/default</code> #FFFFFF</span></h3>
  <div class="rows">${T_FG.map(fgRow).join('')}</div>
  <h3 class="sub">Os 6 papéis × 5 estados</h3>
  <div class="mx-wrap">${mx}</div>
@@ -636,12 +646,15 @@ SECTIONS.push({id:'values',label:'_values',n:99,build(){
 }});
 
 /* --- 7. sombras --- */
-SECTIONS.push({id:'shadow',label:'sombras',n:4,build(){
- return `<div class="h"><h2>Sombras</h2><em>4 Effect Styles</em></div>
- <p class="lede">Sombra <b>não é variável</b> — o Figma não tem tipo sombra. Os 4 níveis são Effect Styles, e devem continuar assim. Cada um é composto por duas sombras sobrepostas na cor <code>#616161</code>, que é o <code>neutral/700</code> da paleta.</p>
- <div class="shadows">${SHADOWS.map(([n,css,desc])=>
-   `<div class="shcard" style="box-shadow:${css}" data-k="${n}"><b>${n.split('/')[1]}</b><span>${desc}</span></div>`).join('')}</div>
- <p class="note">Nenhuma tem deslocamento horizontal nem spread — a progressão de elevação está no eixo Y e no blur. No SCSS a cor é <code>$shadow__color</code>, marcada como estrutural: não muda entre temas.</p>`;
+SECTIONS.push({id:'shadow',label:'sombras',n:11,build(){
+ const cards=a=>`<div class="shadows">${a.map(([n,css,desc])=>
+   `<div class="shcard" style="box-shadow:${css}" data-k="${n}"><b>${n.split('/')[1]}</b><span>${desc}</span></div>`).join('')}</div>`;
+ return `<div class="h"><h2>Sombras</h2><em>11 Effect Styles</em></div>
+ <p class="lede">Sombra <b>não é variável</b> — o Figma não tem tipo sombra. São Effect Styles, em dois grupos, todos na cor <code>#616161</code> (o <code>neutral/700</code> da paleta).</p>
+ <h3 class="sub">Tailwind Conventions — 7 estilos</h3>${cards(SHADOWS_TW)}
+ <p class="note">Mesmos offsets, blurs, spreads e opacidades da escala de sombras do Tailwind, trocando o preto pelo <code>#616161</code>. Única exceção: a primeira camada do <code>shadow-xl</code> ainda está em <code>#000000</code>.</p>
+ <h3 class="sub">Old Shadows — os 4 níveis anteriores</h3>${cards(SHADOWS)}
+ <p class="note">Os 4 níveis originais, agora agrupados como <code>Old Shadows</code>, com as duas camadas de cada um a 30%. No SCSS a cor é <code>$shadow__color</code>, marcada como estrutural: não muda entre temas.</p>`;
 }});
 
 /* ============ RENDER ============ */
